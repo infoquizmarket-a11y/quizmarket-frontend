@@ -5,10 +5,22 @@ function Home() {
   const [health, setHealth] = useState(null);
 
   useEffect(() => {
+    console.log("API_BASE:", API_BASE);
+    console.log("Fetching from:", `${API_BASE}/health`);
+
     fetch(`${API_BASE}/health`)
-      .then((res) => res.json())
-      .then((data) => setHealth(data))
-      .catch((err) => console.error("Error fetching health:", err));
+      .then((res) => {
+        if (!res.ok) throw new Error(`Status: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Backend response:", data);
+        setHealth(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching health:", err);
+        setHealth({ error: err.message });
+      });
   }, []);
 
   return (
