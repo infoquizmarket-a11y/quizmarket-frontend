@@ -904,16 +904,25 @@
         const formData = new FormData();
         formData.append("pdf", f);
 
-        fetch(`${API_BASE}/upload`, {
-          method: "POST",
-          body: formData,
-        })
-          .then(res => res.json())
-          .then(data => {
-            alert(data.message || data.error);
-            if (callback) callback();
-          })
-          .catch(() => alert("Upload failed"));
+       fetch(`${API_BASE}/upload`, {
+  method: "POST",
+  body: formData,
+})
+  .then(async res => {
+    const data = await res.json();
+    console.log("📦 Upload response:", data);
+
+    if (res.ok && data.success) {
+      alert(data.message || "Uploaded successfully");
+      if (callback) callback();
+    } else {
+      alert(data.error || "Upload failed");
+    }
+  })
+  .catch(err => {
+    console.error("❌ Upload error:", err);
+    alert("Upload failed");
+  });
       };
       fi.click();
     }
