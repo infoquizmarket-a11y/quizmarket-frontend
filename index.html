@@ -1,13 +1,1030 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>quizmarket-frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZ MARKET - TURN STUDY INTO SUCCESS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* All your existing CSS remains exactly the same */
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .company-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin: 0 15px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #2a5298;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #2a5298;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(30, 60, 114, 0.8), rgba(30, 60, 114, 0.9)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin-bottom: 50px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .cta-button:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        /* Sections */
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            font-size: 2rem;
+            color: #1e3c72;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: #ff6b6b;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .pcm-image {
+            background: linear-gradient(rgba(30, 60, 114, 0.7), rgba(30, 60, 114, 0.7)), url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+        
+        .pcb-image {
+            background: linear-gradient(rgba(42, 82, 152, 0.7), rgba(42, 82, 152, 0.7)), url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+        
+        .commerce-image {
+            background: linear-gradient(rgba(255, 107, 107, 0.7), rgba(255, 107, 107, 0.7)), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        }
+        
+        .category-content {
+            padding: 25px;
+        }
+        
+        .category-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .category-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .category-button {
+            display: inline-block;
+            background-color: #1e3c72;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .category-button:hover {
+            background-color: #2a5298;
+        }
+        
+        /* Free Samples Section */
+        .free-samples {
+            background-color: white;
+            padding: 50px 0;
+            margin: 50px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .sample-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .sample-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sample-icon {
+            font-size: 2.5rem;
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+        
+        .sample-card h4 {
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        
+        /* PDF Store Section */
+        .pdf-store {
+            padding: 50px 0;
+        }
+        
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .pdf-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+        
+        .pdf-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pdf-thumbnail {
+            height: 180px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #1e3c72;
+        }
+        
+        .pdf-info {
+            padding: 20px;
+        }
+        
+        .pdf-info h4 {
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .pdf-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .pdf-price {
+            font-weight: 700;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .buy-btn {
+            display: block;
+            width: 100%;
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .buy-btn:hover {
+            background-color: #2a5298;
+        }
+        
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e3c72;
+        }
+        
+        .payment-instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .payment-details {
+            margin-top: 20px;
+        }
+        
+        .payment-details p {
+            margin-bottom: 10px;
+        }
+        
+        .confirm-payment {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .confirm-payment:hover {
+            background-color: #218838;
+        }
+        
+        /* My Library Section */
+        .my-library {
+            background-color: white;
+            padding: 50px 0;
+            margin: 50px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .library-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .library-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .library-icon {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        
+        .library-card h4 {
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+        
+        .view-btn {
+            display: inline-block;
+            background-color: #1e3c72;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .view-btn:hover {
+            background-color: #2a5298;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #1e3c72;
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: #ff6b6b;
+            bottom: 0;
+            left: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 5px 10px;
+            }
+            
+            .company-name {
+                font-size: 2.2rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Admin Controls Styling */
+        .admin-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-only {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <h1 class="company-name">QUIZ MARKET</h1>
+                <p class="tagline">TURN STUDY INTO SUCCESS</p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#pcm">PCM</a></li>
+                <li><a href="#pcb">PCB</a></li>
+                <li><a href="#commerce">Commerce</a></li>
+                <li><a href="#free-samples">Free Samples</a></li>
+                <li><a href="#pdf-store">PDF Store</a></li>
+                <li><a href="#my-library">My Library</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Premium Study Materials for JEE, NEET & Commerce</h1>
+            <p>Access high-quality PDFs including question banks, formula sheets, and study guides to boost your exam preparation.</p>
+            <a href="#pdf-store" class="cta-button">Browse PDF Store</a>
+        </div>
+    </section>
+    
+    <!-- Categories Section -->
+    <section class="container">
+        <h2 class="section-title">Our Study Materials</h2>
+        <div class="categories">
+            <!-- PCM Card -->
+            <div class="category-card" id="pcm">
+                <div class="category-image pcm-image"></div>
+                <div class="category-content">
+                    <h3>Physics, Chemistry & Mathematics</h3>
+                    <p>Comprehensive study materials for JEE aspirants including question banks, formula sheets, and solved papers.</p>
+                    <a href="#pdf-store" class="category-button">Browse PCM Materials</a>
+                </div>
+            </div>
+            
+            <!-- PCB Card -->
+            <div class="category-card" id="pcb">
+                <div class="category-image pcb-image"></div>
+                <div class="category-content">
+                    <h3>Physics, Chemistry & Biology</h3>
+                    <p>Essential resources for NEET preparation with topic-wise questions, diagrams, and revision notes.</p>
+                    <a href="#pdf-store" class="category-button">Browse PCB Materials</a>
+                </div>
+            </div>
+            
+            <!-- Commerce Card -->
+            <div class="category-card" id="commerce">
+                <div class="category-image commerce-image"></div>
+                <div class="category-content">
+                    <h3>Commerce</h3>
+                    <p>Study materials for Commerce students including Accounts, Economics, and Business Studies resources.</p>
+                    <a href="#pdf-store" class="category-button">Browse Commerce Materials</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Free Samples Section -->
+    <section class="free-samples" id="free-samples">
+        <div class="container">
+            <h2 class="section-title">Free Sample PDFs</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px;">Try our free samples before purchasing. Get a glimpse of the quality and content we offer.</p>
+            
+            <!-- ADMIN: Upload PDF button (visible only to authenticated admin) -->
+            <div class="admin-controls">
+                <button id="admin-login-btn" class="download-btn" style="background-color:#6c757d; border:none; cursor:pointer; margin-right:8px;">Admin Login</button>
+                <button id="upload-sample-btn" class="download-btn admin-only" style="background-color:#007bff; border:none; cursor:pointer; margin-right:8px;">Upload Sample PDF</button>
+                <button id="remove-uploaded-btn" class="download-btn admin-only" style="background-color:#dc3545; border:none; cursor:pointer;">Remove Uploaded Samples</button>
+            </div>
+            
+            <div class="samples-grid" id="samples-grid">
+                <!-- Free samples will be loaded here -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- PDF Store Section -->
+    <section class="pdf-store" id="pdf-store">
+        <div class="container">
+            <h2 class="section-title">PDF Store</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px;">Purchase premium PDFs for your exam preparation. Once purchased, you'll have lifetime access to the content.</p>
+            
+            <!-- ADMIN: Upload/Remove Store PDFs (visible only to authenticated admin) -->
+            <div class="admin-controls">
+                <button id="upload-store-btn" class="download-btn admin-only" style="background-color:#007bff; border:none; cursor:pointer; margin-right:8px;">Upload Store PDF</button>
+                <button id="remove-store-btn" class="download-btn admin-only" style="background-color:#dc3545; border:none; cursor:pointer;">Remove Store PDFs</button>
+            </div>
+            
+            <div class="pdf-grid" id="pdf-grid">
+                <!-- Store PDFs will be loaded here -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- My Library Section -->
+    <section class="my-library" id="my-library">
+        <div class="container">
+            <h2 class="section-title">My Library</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px;">Access all your purchased PDFs here. Your purchased content is available forever.</p>
+            
+            <div class="library-grid" id="library-grid">
+                <!-- Purchased PDFs will appear here -->
+                <div class="library-card" id="empty-library">
+                    <div class="library-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4>Your Library is Empty</h4>
+                    <p>Purchase PDFs from our store to add them to your library.</p>
+                    <a href="#pdf-store" class="view-btn">Browse Store</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 class="modal-title">Complete Your Purchase</h3>
+            
+            <div class="payment-instructions">
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Scan the QR code with your payment app</li>
+                    <li>Complete the payment</li>
+                    <li>Click "I've Paid" button below</li>
+                    <li>Your PDF will be unlocked immediately</li>
+                </ol>
+            </div>
+            
+            <div class="qr-code-container">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=QUIZMARKET-PAYMENT" alt="Payment QR Code" class="qr-code" id="payment-qr">
+                <p><small>Scan to pay with UPI</small></p>
+            </div>
+            
+            <div class="payment-details">
+                <p><strong>Item:</strong> <span id="payment-item">JEE Physics Question Bank</span></p>
+                <p><strong>Amount:</strong> <span id="payment-amount">₹199</span></p>
+                <p><strong>UPI ID:</strong> quizmarket@paytm</p>
+            </div>
+            
+            <button class="confirm-payment" id="confirm-payment">I've Paid</button>
+        </div>
+    </div>
+    
+    <!-- Admin Login Modal -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content" style="max-width:420px; padding:20px;">
+            <span id="admin-modal-close" class="close-modal" title="Close">&times;</span>
+            <h3 class="modal-title">Admin Sign In</h3>
+            <div style="padding:10px; background:#f8f9fa; border-radius:6px; margin-bottom:10px;">
+                <label style="display:block; margin-bottom:6px; color:#333;">Username</label>
+                <input id="admin-username" type="text" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;" placeholder="admin">
+                <label style="display:block; margin:12px 0 6px; color:#333;">Password</label>
+                <input id="admin-password" type="password" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ddd;" placeholder="Password">
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button id="admin-signin-btn" class="download-btn" style="background:#1e3c72;">Sign In</button>
+                <button id="admin-cancel-btn" class="download-btn" style="background:#6c757d;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>QUIZ MARKET</h3>
+                    <p>Your one-stop destination for premium study materials for JEE, NEET, and Commerce exams.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#pcm">PCM Materials</a></li>
+                        <li><a href="#pcb">PCB Materials</a></li>
+                        <li><a href="#commerce">Commerce Materials</a></li>
+                        <li><a href="#free-samples">Free Samples</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li>Email: info@quizmarket.com</li>
+                        <li>Phone: +91 98765 43210</li>
+                        <li>Address: Education Hub, Delhi, India</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 QUIZ MARKET. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+  const API_BASE = "https://quizmarket-backend.onrender.com";
+
+  (function () {
+    // Admin Authentication
+    const ADMIN_KEY = "quizmarket_is_admin";
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "admin123";
+
+    // DOM Elements
+    const adminLoginBtn = document.getElementById("admin-login-btn");
+    const uploadSampleBtn = document.getElementById("upload-sample-btn");
+    const removeUploadedBtn = document.getElementById("remove-uploaded-btn");
+    const uploadStoreBtn = document.getElementById("upload-store-btn");
+    const removeStoreBtn = document.getElementById("remove-store-btn");
+    const samplesGrid = document.getElementById("samples-grid");
+    const pdfGrid = document.getElementById("pdf-grid");
+    const libraryGrid = document.getElementById("library-grid");
+    const emptyLibrary = document.getElementById("empty-library");
+
+    // Admin Modal Elements
+    const adminModal = document.getElementById("admin-modal");
+    const adminUsernameInput = document.getElementById("admin-username");
+    const adminPasswordInput = document.getElementById("admin-password");
+    const adminSigninBtn = document.getElementById("admin-signin-btn");
+    const adminCancelBtn = document.getElementById("admin-cancel-btn");
+    const adminModalClose = document.getElementById("admin-modal-close");
+
+    function isAdmin() {
+      return sessionStorage.getItem(ADMIN_KEY) === "true";
+    }
+
+    function setAdmin(status) {
+      if (status) {
+        sessionStorage.setItem(ADMIN_KEY, "true");
+      } else {
+        sessionStorage.removeItem(ADMIN_KEY);
+      }
+      updateAdminUI();
+    }
+
+    function updateAdminUI() {
+      const adminElements = document.querySelectorAll(".admin-only");
+      adminElements.forEach((el) => {
+        el.style.display = isAdmin() ? "inline-block" : "none";
+      });
+
+      if (adminLoginBtn) {
+        adminLoginBtn.textContent = isAdmin() ? "Admin Logout" : "Admin Login";
+      }
+    }
+
+    updateAdminUI();
+
+    if (adminLoginBtn) {
+      adminLoginBtn.addEventListener("click", () => {
+        if (isAdmin()) {
+          setAdmin(false);
+        } else {
+          adminModal.style.display = "flex";
+        }
+      });
+    }
+
+    if (adminModalClose) {
+      adminModalClose.addEventListener("click", () => {
+        adminModal.style.display = "none";
+      });
+    }
+
+    if (adminCancelBtn) {
+      adminCancelBtn.addEventListener("click", () => {
+        adminModal.style.display = "none";
+      });
+    }
+
+    if (adminSigninBtn) {
+      adminSigninBtn.addEventListener("click", () => {
+        const username = adminUsernameInput.value.trim();
+        const password = adminPasswordInput.value.trim();
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+          setAdmin(true);
+          adminModal.style.display = "none";
+        } else {
+          alert("Invalid credentials");
+        }
+      });
+    }
+
+    function uploadPDF(callback) {
+      const fi = document.createElement("input");
+      fi.type = "file";
+      fi.accept = "application/pdf";
+      fi.onchange = () => {
+        const f = fi.files && fi.files[0];
+        if (!f) return;
+
+        const formData = new FormData();
+        formData.append("pdf", f);
+
+        fetch(`${API_BASE}/upload`, {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            alert(data.message || data.error);
+            if (callback) callback();
+          })
+          .catch(() => {
+            alert("Upload failed");
+          });
+      };
+      fi.click();
+    }
+
+    function deleteFile(filename, callback) {
+      fetch(`${API_BASE}/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          alert(data.message || data.error);
+          if (callback) callback();
+        })
+        .catch(() => alert("Delete failed"));
+    }
+
+    if (uploadSampleBtn) {
+      uploadSampleBtn.addEventListener("click", () => {
+        if (!isAdmin()) {
+          alert("Admin only. Please login.");
+          return;
+        }
+        uploadPDF(loadSamples);
+      });
+    }
+
+    if (uploadStoreBtn) {
+      uploadStoreBtn.addEventListener("click", () => {
+        if (!isAdmin()) {
+          alert("Admin only. Please login.");
+          return;
+        }
+        uploadPDF(loadStore);
+      });
+    }
+
+    if (removeUploadedBtn) {
+      removeUploadedBtn.addEventListener("click", () => {
+        alert("To delete individual samples, use the red delete buttons below each card.");
+      });
+    }
+
+    if (removeStoreBtn) {
+      removeStoreBtn.addEventListener("click", () => {
+        alert("To delete individual store PDFs, use the red delete buttons below each card.");
+      });
+    }
+
+    function loadSamples() {
+      fetch(`${API_BASE}/list`)
+        .then((res) => res.json())
+        .then((data) => {
+          samplesGrid.innerHTML = "";
+          data.files.forEach((file) => {
+            const card = document.createElement("div");
+            card.className = "sample-card";
+            card.innerHTML = `
+              <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
+              <h4>${file.name}</h4>
+              <a class="download-btn" href="${API_BASE}/uploads/${file.name}" target="_blank">Download</a>
+              ${
+                isAdmin()
+                  ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadSamples)">Delete</button>`
+                  : ""
+              }
+            `;
+            samplesGrid.appendChild(card);
+          });
+        });
+    }
+
+    function loadStore() {
+      fetch(`${API_BASE}/list`)
+        .then((res) => res.json())
+        .then((data) => {
+          pdfGrid.innerHTML = "";
+          data.files.forEach((file) => {
+            const card = document.createElement("div");
+            card.className = "pdf-card";
+            card.innerHTML = `
+              <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
+              <div class="pdf-info">
+                <h4>${file.name}</h4>
+                <p>Premium study material</p>
+                <div class="pdf-price">₹199</div>
+                <button class="buy-btn" onclick="window.open('${API_BASE}/uploads/${file.name}', '_blank')">Download</button>
+                ${
+                  isAdmin()
+                    ? `<button class="buy-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadStore)">Delete</button>`
+                    : ""
+                }
+              </div>
+            `;
+            pdfGrid.appendChild(card);
+          });
+        });
+    }
+
+    loadSamples();
+    loadStore();
+  })();
+</script>
+            </body>
+            </html>
