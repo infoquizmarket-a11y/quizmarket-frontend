@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="favicon.jpg" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QUIZ MARKET - TURN STUDY INTO SUCCESS</title>
@@ -813,7 +814,7 @@
   <script>
   const API_BASE = "https://quizmarket-backend.onrender.com";
 
-  (function () {
+  document.addEventListener("DOMContentLoaded", () => {
     const ADMIN_KEY = "quizmarket_is_admin";
     const ADMIN_USERNAME = "admin";
     const ADMIN_PASSWORD = "admin123";
@@ -963,63 +964,137 @@
       });
     }
 
-    function loadSamples() {
-      fetch(`${API_BASE}/list`)
-        .then(res => res.json())
-        .then(data => {
-          samplesGrid.innerHTML = "";
-          data.files
-            .filter(file => file.name.startsWith("sample_"))
-            .forEach(file => {
-              const card = document.createElement("div");
-              card.className = "sample-card";
-              card.innerHTML = `
-                <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
-                <h4>${file.name}</h4>
-                <a class="download-btn" href="${API_BASE}/uploads/${file.name}" target="_blank">Download</a>
-                ${
-                  isAdmin()
-                    ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadSamples)">Delete</button>`
-                    : ""
-                }
-              `;
-              samplesGrid.appendChild(card);
-            });
-        });
-    }
+});
+function loadSamples() {
+  if (!samplesGrid) {
+    console.error("❌ samplesGrid is null");
+    return;
+  }
 
-    function loadStore() {
-      fetch(`${API_BASE}/list`)
-        .then(res => res.json())
-        .then(data => {
-          pdfGrid.innerHTML = "";
-          data.files
-            .filter(file => file.name.startsWith("store_"))
-            .forEach(file => {
-              const card = document.createElement("div");
-              card.className = "pdf-card";
-              card.innerHTML = `
-                <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
-                <div class="pdf-info">
-                  <h4>${file.name}</h4>
-                  <p>Premium study material</p>
-                  <div class="pdf-price">₹199</div>
-                  <button class="buy-btn" onclick="window.open('${API_BASE}/uploads/${file.name}', '_blank')">Download</button>
-                  ${
-                    isAdmin()
-                      ? `<button class="buy-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadStore)">Delete</button>`
-                      : ""
-                  }
-                </div>
-              `;
-              pdfGrid.appendChild(card);
-            });
-        });
-    }
+  fetch(`${API_BASE}/list?t=${Date.now()}`, {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    cache: "no-store"
+  })
+    .then(async res => {
+      console.log("📡 Sample response status:", res.status);
+      const text = await res.text();
+      console.log("📦 Raw sample response text:", text);
+      try {
+        const data = JSON.parse(text);
+        console.log("✅ Parsed sample JSON:", data);
+        console.log("🧪 Full parsed response object:", data);
 
-    loadSamples();
-    loadStore();
-  })();
+        samplesGrid.innerHTML = "";
+
+        const files = Array.isArray(data?.samples)
+          ? data.samples.filter(file => file && typeof file.title === "string" && file.title.startsWith("sample_"))
+          : [];
+
+        if (files.length === 0) {
+          console.warn("⚠️ No valid sample PDFs found:", data);
+          samplesGrid.innerHTML = "<p style='color:red;'>No sample PDFs found.</p>";
+          return;
+        }
+
+        console.log("✅ Loaded sample PDFs:", files);
+
+        files.forEach(file => {
+          const card = document.createElement("div");
+          card.className = "sample-card";
+          card.innerHTML = `
+            <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
+            <h4>${file.title}</h4>
+            <button class="download-btn" onclick="window.open('${file.url}', '_blank')">Download</button>
+            ${
+              isAdmin()
+                ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadSamples)">Delete</button>`
+                : ""
+            }
+          `;
+          samplesGrid.appendChild(card);
+        });
+      } catch (err) {
+        console.error("❌ Failed to parse sample JSON:", err);
+        samplesGrid.innerHTML = "<p style='color:red;'>Error loading sample PDFs.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("❌ Fetch failed for sample PDFs:", err);
+      samplesGrid.innerHTML = "<p style='color:red;'>Failed to load sample PDFs.</p>";
+    });
+}
+
+
+function loadStore() {
+  if (!pdfGrid) {
+    console.error("❌ pdfGrid is null");
+    return;
+  }
+
+  fetch(`${API_BASE}/list?t=${Date.now()}`, {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    cache: "no-store"
+  })
+    .then(async res => {
+      console.log("📡 Store response status:", res.status);
+      const text = await res.text();
+      console.log("📦 Raw store response text:", text);
+      try {
+        const data = JSON.parse(text);
+        console.log("✅ Parsed store JSON:", data);
+        console.log("🧪 Full parsed response object:", data);
+
+        pdfGrid.innerHTML = "";
+
+        const files = Array.isArray(data?.samples)
+          ? data.samples.filter(file => file && typeof file.title === "string" && !file.title.startsWith("sample_"))
+          : [];
+
+        if (files.length === 0) {
+          console.warn("⚠️ No valid store PDFs found:", data);
+          pdfGrid.innerHTML = "<p style='color:red;'>No store PDFs found.</p>";
+          return;
+        }
+
+        console.log("✅ Loaded store PDFs:", files);
+
+        files.forEach(file => {
+          const card = document.createElement("div");
+          card.className = "pdf-card";
+          card.innerHTML = `
+            <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
+            <div class="pdf-info">
+              <h4>${file.title}</h4>
+              <p>${file.description || "No description available."}</p>
+              <p class="pdf-price">₹${file.price || "199"}</p>
+              <button class="buy-btn" onclick="initiatePurchase('${file.title}', ${file.price || 199})">Buy Now</button>
+              ${
+                isAdmin()
+                  ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadStore)">Delete</button>`
+                  : ""
+              }
+            </div>
+          `;
+          pdfGrid.appendChild(card);
+        });
+      } catch (err) {
+        console.error("❌ Failed to parse store JSON:", err);
+        pdfGrid.innerHTML = "<p style='color:red;'>Error loading store PDFs.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("❌ Fetch failed for store PDFs:", err);
+      pdfGrid.innerHTML = "<p style='color:red;'>Failed to load store PDFs.</p>";
+    });
+}
 </script>
-            </body>
-            </html>
+</body>
+</html>
