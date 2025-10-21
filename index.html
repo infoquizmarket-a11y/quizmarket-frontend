@@ -810,16 +810,14 @@
         </div>
     </footer>
 
-   <script>
+  <script>
   const API_BASE = "https://quizmarket-backend.onrender.com";
 
   (function () {
-    // Admin Authentication
     const ADMIN_KEY = "quizmarket_is_admin";
     const ADMIN_USERNAME = "admin";
     const ADMIN_PASSWORD = "admin123";
 
-    // DOM Elements
     const adminLoginBtn = document.getElementById("admin-login-btn");
     const uploadSampleBtn = document.getElementById("upload-sample-btn");
     const removeUploadedBtn = document.getElementById("remove-uploaded-btn");
@@ -827,10 +825,7 @@
     const removeStoreBtn = document.getElementById("remove-store-btn");
     const samplesGrid = document.getElementById("samples-grid");
     const pdfGrid = document.getElementById("pdf-grid");
-    const libraryGrid = document.getElementById("library-grid");
-    const emptyLibrary = document.getElementById("empty-library");
 
-    // Admin Modal Elements
     const adminModal = document.getElementById("admin-modal");
     const adminUsernameInput = document.getElementById("admin-username");
     const adminPasswordInput = document.getElementById("admin-password");
@@ -852,11 +847,9 @@
     }
 
     function updateAdminUI() {
-      const adminElements = document.querySelectorAll(".admin-only");
-      adminElements.forEach((el) => {
+      document.querySelectorAll(".admin-only").forEach(el => {
         el.style.display = isAdmin() ? "inline-block" : "none";
       });
-
       if (adminLoginBtn) {
         adminLoginBtn.textContent = isAdmin() ? "Admin Logout" : "Admin Login";
       }
@@ -914,14 +907,12 @@
           method: "POST",
           body: formData,
         })
-          .then((res) => res.json())
-          .then((data) => {
+          .then(res => res.json())
+          .then(data => {
             alert(data.message || data.error);
             if (callback) callback();
           })
-          .catch(() => {
-            alert("Upload failed");
-          });
+          .catch(() => alert("Upload failed"));
       };
       fi.click();
     }
@@ -932,8 +923,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ filename }),
       })
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
           alert(data.message || data.error);
           if (callback) callback();
         })
@@ -962,63 +953,67 @@
 
     if (removeUploadedBtn) {
       removeUploadedBtn.addEventListener("click", () => {
-        alert("To delete individual samples, use the red delete buttons below each card.");
+        alert("Use the red delete buttons below each sample to remove them.");
       });
     }
 
     if (removeStoreBtn) {
       removeStoreBtn.addEventListener("click", () => {
-        alert("To delete individual store PDFs, use the red delete buttons below each card.");
+        alert("Use the red delete buttons below each store PDF to remove them.");
       });
     }
 
     function loadSamples() {
       fetch(`${API_BASE}/list`)
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
           samplesGrid.innerHTML = "";
-          data.files.forEach((file) => {
-            const card = document.createElement("div");
-            card.className = "sample-card";
-            card.innerHTML = `
-              <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
-              <h4>${file.name}</h4>
-              <a class="download-btn" href="${API_BASE}/uploads/${file.name}" target="_blank">Download</a>
-              ${
-                isAdmin()
-                  ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadSamples)">Delete</button>`
-                  : ""
-              }
-            `;
-            samplesGrid.appendChild(card);
-          });
+          data.files
+            .filter(file => file.name.startsWith("sample_"))
+            .forEach(file => {
+              const card = document.createElement("div");
+              card.className = "sample-card";
+              card.innerHTML = `
+                <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
+                <h4>${file.name}</h4>
+                <a class="download-btn" href="${API_BASE}/uploads/${file.name}" target="_blank">Download</a>
+                ${
+                  isAdmin()
+                    ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadSamples)">Delete</button>`
+                    : ""
+                }
+              `;
+              samplesGrid.appendChild(card);
+            });
         });
     }
 
     function loadStore() {
       fetch(`${API_BASE}/list`)
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
           pdfGrid.innerHTML = "";
-          data.files.forEach((file) => {
-            const card = document.createElement("div");
-            card.className = "pdf-card";
-            card.innerHTML = `
-              <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
-              <div class="pdf-info">
-                <h4>${file.name}</h4>
-                <p>Premium study material</p>
-                <div class="pdf-price">₹199</div>
-                <button class="buy-btn" onclick="window.open('${API_BASE}/uploads/${file.name}', '_blank')">Download</button>
-                ${
-                  isAdmin()
-                    ? `<button class="buy-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadStore)">Delete</button>`
-                    : ""
-                }
-              </div>
-            `;
-            pdfGrid.appendChild(card);
-          });
+          data.files
+            .filter(file => file.name.startsWith("store_"))
+            .forEach(file => {
+              const card = document.createElement("div");
+              card.className = "pdf-card";
+              card.innerHTML = `
+                <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
+                <div class="pdf-info">
+                  <h4>${file.name}</h4>
+                  <p>Premium study material</p>
+                  <div class="pdf-price">₹199</div>
+                  <button class="buy-btn" onclick="window.open('${API_BASE}/uploads/${file.name}', '_blank')">Download</button>
+                  ${
+                    isAdmin()
+                      ? `<button class="buy-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.name}', loadStore)">Delete</button>`
+                      : ""
+                  }
+                </div>
+              `;
+              pdfGrid.appendChild(card);
+            });
         });
     }
 
