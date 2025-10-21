@@ -42,15 +42,19 @@ export default function Home() {
     fi.click();
   }
 
-  function loadSamples() {
-    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-    setSamples(uploaded.filter(file => file.name.startsWith("sample_")));
-  }
+ function loadSamples() {
+  const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
+  const sampleFiles = uploaded.filter(file => file.name.startsWith("sample_"));
+  console.log("📁 Loaded samples:", sampleFiles);
+  setSamples(sampleFiles);
+}
 
   function loadStore() {
-    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-    setStorePDFs(uploaded.filter(file => file.name.startsWith("store_")));
-  }
+  const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
+  const storeFiles = uploaded.filter(file => file.name.startsWith("store_"));
+  console.log("🛒 Loaded store PDFs:", storeFiles);
+  setStorePDFs(storeFiles);
+}
 
   return (
     <div style={{ padding: "2rem" }}>
