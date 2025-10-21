@@ -905,25 +905,25 @@
         const formData = new FormData();
         formData.append("pdf", f);
 
-       fetch(`${API_BASE}/upload`, {
-  method: "POST",
-  body: formData,
-})
-  .then(async res => {
-    const data = await res.json();
-    console.log("📦 Upload response:", data);
+        fetch(`${API_BASE}/upload`, {
+          method: "POST",
+          body: formData,
+        })
+          .then(async res => {
+            const data = await res.json();
+            console.log("📦 Upload response:", data);
 
-    if (res.ok && data.success) {
-      alert(data.message || "Uploaded successfully");
-      if (callback) callback();
-    } else {
-      alert(data.error || "Upload failed");
-    }
-  })
-  .catch(err => {
-    console.error("❌ Upload error:", err);
-    alert("Upload failed");
-  });
+            if (res.ok && data.success) {
+              alert(data.message || "Uploaded successfully");
+              if (callback) callback();
+            } else {
+              alert(data.error || "Upload failed");
+            }
+          })
+          .catch(err => {
+            console.error("❌ Upload error:", err);
+            alert("Upload failed");
+          });
       };
       fi.click();
     }
@@ -940,6 +940,120 @@
           if (callback) callback();
         })
         .catch(() => alert("Delete failed"));
+    }
+
+    function loadSamples() {
+      if (!samplesGrid) {
+        console.error("❌ samplesGrid is null");
+        return;
+      }
+
+      fetch(`${API_BASE}/list?t=${Date.now()}`, {
+        method: "GET",
+        headers: {
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        },
+        cache: "no-store"
+      })
+        .then(async res => {
+          console.log("📡 Sample response status:", res.status);
+          const text = await res.text();
+          console.log("📦 Raw sample response text:", text);
+          try {
+            const data = JSON.parse(text);
+            console.log("✅ Parsed sample JSON:", data);
+
+            samplesGrid.innerHTML = "";
+
+            const files = Array.isArray(data?.samples)
+              ? data.samples.filter(file => file && typeof file.title === "string" && file.title.startsWith("sample_"))
+              : [];
+
+            if (files.length === 0) {
+              samplesGrid.innerHTML = "<p style='color:red;'>No sample PDFs found.</p>";
+              return;
+            }
+
+            files.forEach(file => {
+              const card = document.createElement("div");
+              card.className = "sample-card";
+              card.innerHTML = `
+                <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
+                <h4>${file.title}</h4>
+                <button class="download-btn" onclick="window.open('${file.url}', '_blank')">Download</button>
+                ${isAdmin() ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadSamples)">Delete</button>` : ""}
+              `;
+              samplesGrid.appendChild(card);
+            });
+          } catch (err) {
+            console.error("❌ Failed to parse sample JSON:", err);
+            samplesGrid.innerHTML = "<p style='color:red;'>Error loading sample PDFs.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("❌ Fetch failed for sample PDFs:", err);
+          samplesGrid.innerHTML = "<p style='color:red;'>Failed to load sample PDFs.</p>";
+        });
+    }
+
+    function loadStore() {
+      if (!pdfGrid) {
+        console.error("❌ pdfGrid is null");
+        return;
+      }
+
+      fetch(`${API_BASE}/list?t=${Date.now()}`, {
+        method: "GET",
+        headers: {
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        },
+        cache: "no-store"
+      })
+        .then(async res => {
+          console.log("📡 Store response status:", res.status);
+          const text = await res.text();
+          console.log("📦 Raw store response text:", text);
+          try {
+            const data = JSON.parse(text);
+            console.log("✅ Parsed store JSON:", data);
+
+            pdfGrid.innerHTML = "";
+
+            const files = Array.isArray(data?.samples)
+              ? data.samples.filter(file => file && typeof file.title === "string" && !file.title.startsWith("sample_"))
+              : [];
+
+            if (files.length === 0) {
+              pdfGrid.innerHTML = "<p style='color:red;'>No store PDFs found.</p>";
+              return;
+            }
+
+            files.forEach(file => {
+              const card = document.createElement("div");
+              card.className = "pdf-card";
+              card.innerHTML = `
+                <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
+                <div class="pdf-info">
+                  <h4>${file.title}</h4>
+                  <p>${file.description || "No description available."}</p>
+                  <p class="pdf-price">₹${file.price || "199"}</p>
+                  <button class="buy-btn" onclick="initiatePurchase('${file.title}', ${file.price || 199})">Buy Now</button>
+                  ${isAdmin() ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadStore)">Delete</button>` : ""}
+                </div>
+              `;
+              pdfGrid.appendChild(card);
+            });
+          } catch (err) {
+            console.error("❌ Failed to parse store JSON:", err);
+            pdfGrid.innerHTML = "<p style='color:red;'>Error loading store PDFs.</p>";
+          }
+        })
+        .catch(err => {
+          console.error("❌ Fetch failed for store PDFs:", err);
+          pdfGrid.innerHTML = "<p style='color:red;'>Failed to load store PDFs.</p>";
+        });
     }
 
     if (uploadSampleBtn) {
@@ -961,150 +1075,7 @@
         uploadPDF(loadStore);
       });
     }
-
-    if (removeUploadedBtn) {
-      removeUploadedBtn.addEventListener("click", () => {
-        alert("Use the red delete buttons below each sample to remove them.");
-      });
-    }
-
-    if (removeStoreBtn) {
-      removeStoreBtn.addEventListener("click", () => {
-        alert("Use the red delete buttons below each store PDF to remove them.");
-      });
-    }
-
-});
-function loadSamples() {
-  if (!samplesGrid) {
-    console.error("❌ samplesGrid is null");
-    return;
-  }
-
-  fetch(`${API_BASE}/list?t=${Date.now()}`, {
-    method: "GET",
-    headers: {
-      "Cache-Control": "no-cache",
-      "Pragma": "no-cache"
-    },
-    cache: "no-store"
-  })
-    .then(async res => {
-      console.log("📡 Sample response status:", res.status);
-      const text = await res.text();
-      console.log("📦 Raw sample response text:", text);
-      try {
-        const data = JSON.parse(text);
-        console.log("✅ Parsed sample JSON:", data);
-        console.log("🧪 Full parsed response object:", data);
-
-        samplesGrid.innerHTML = "";
-
-        const files = Array.isArray(data?.samples)
-          ? data.samples.filter(file => file && typeof file.title === "string" && file.title.startsWith("sample_"))
-          : [];
-
-        if (files.length === 0) {
-          console.warn("⚠️ No valid sample PDFs found:", data);
-          samplesGrid.innerHTML = "<p style='color:red;'>No sample PDFs found.</p>";
-          return;
-        }
-
-        console.log("✅ Loaded sample PDFs:", files);
-
-        files.forEach(file => {
-          const card = document.createElement("div");
-          card.className = "sample-card";
-          card.innerHTML = `
-            <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
-            <h4>${file.title}</h4>
-            <button class="download-btn" onclick="window.open('${file.url}', '_blank')">Download</button>
-            ${
-              isAdmin()
-                ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadSamples)">Delete</button>`
-                : ""
-            }
-          `;
-          samplesGrid.appendChild(card);
-        });
-      } catch (err) {
-        console.error("❌ Failed to parse sample JSON:", err);
-        samplesGrid.innerHTML = "<p style='color:red;'>Error loading sample PDFs.</p>";
-      }
-    })
-    .catch(err => {
-      console.error("❌ Fetch failed for sample PDFs:", err);
-      samplesGrid.innerHTML = "<p style='color:red;'>Failed to load sample PDFs.</p>";
-    });
-}
-
-
-function loadStore() {
-  if (!pdfGrid) {
-    console.error("❌ pdfGrid is null");
-    return;
-  }
-
-  fetch(`${API_BASE}/list?t=${Date.now()}`, {
-    method: "GET",
-    headers: {
-      "Cache-Control": "no-cache",
-      "Pragma": "no-cache"
-    },
-    cache: "no-store"
-  })
-    .then(async res => {
-      console.log("📡 Store response status:", res.status);
-      const text = await res.text();
-      console.log("📦 Raw store response text:", text);
-      try {
-        const data = JSON.parse(text);
-        console.log("✅ Parsed store JSON:", data);
-        console.log("🧪 Full parsed response object:", data);
-
-        pdfGrid.innerHTML = "";
-
-        const files = Array.isArray(data?.samples)
-          ? data.samples.filter(file => file && typeof file.title === "string" && !file.title.startsWith("sample_"))
-          : [];
-
-        if (files.length === 0) {
-          console.warn("⚠️ No valid store PDFs found:", data);
-          pdfGrid.innerHTML = "<p style='color:red;'>No store PDFs found.</p>";
-          return;
-        }
-
-        console.log("✅ Loaded store PDFs:", files);
-
-        files.forEach(file => {
-          const card = document.createElement("div");
-          card.className = "pdf-card";
-          card.innerHTML = `
-            <div class="pdf-thumbnail"><i class="fas fa-file-pdf"></i></div>
-            <div class="pdf-info">
-              <h4>${file.title}</h4>
-              <p>${file.description || "No description available."}</p>
-              <p class="pdf-price">₹${file.price || "199"}</p>
-              <button class="buy-btn" onclick="initiatePurchase('${file.title}', ${file.price || 199})">Buy Now</button>
-              ${
-                isAdmin()
-                  ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadStore)">Delete</button>`
-                  : ""
-              }
-            </div>
-          `;
-          pdfGrid.appendChild(card);
-        });
-      } catch (err) {
-        console.error("❌ Failed to parse store JSON:", err);
-        pdfGrid.innerHTML = "<p style='color:red;'>Error loading store PDFs.</p>";
-      }
-    })
-    .catch(err => {
-      console.error("❌ Fetch failed for store PDFs:", err);
-      pdfGrid.innerHTML = "<p style='color:red;'>Failed to load store PDFs.</p>";
-    });
-}
-</script>
+  })();
+  </script>
 </body>
 </html>
