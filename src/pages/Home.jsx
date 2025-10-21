@@ -11,6 +11,8 @@ export default function Home() {
   }, []);
 
   function uploadPDF(callback) {
+    console.log("📤 uploadPDF called"); // Confirm function is triggered
+
     const fi = document.createElement("input");
     fi.type = "file";
     fi.accept = "application/pdf";
@@ -29,6 +31,8 @@ export default function Home() {
       })
         .then(res => res.json())
         .then(data => {
+          console.log("📦 Upload response:", data);
+
           if (data.url) {
             alert("✅ PDF uploaded successfully!");
             const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
