@@ -10,8 +10,8 @@ export default function Home() {
     loadStore();
   }, []);
 
-  function uploadPDF(callback) {
-    console.log("📤 uploadPDF called"); // Confirm function is triggered
+  function uploadPDF(prefix, callback) {
+    console.log("📤 uploadPDF called");
 
     const fi = document.createElement("input");
     fi.type = "file";
@@ -20,10 +20,11 @@ export default function Home() {
       const f = fi.files && fi.files[0];
       if (!f) return;
 
-      console.log("📤 Upload triggered:", f.name);
+      const renamedFile = new File([f], `${prefix}_${f.name}`, { type: f.type });
+      console.log("📤 Upload triggered:", renamedFile.name);
 
       const formData = new FormData();
-      formData.append("pdf", f);
+      formData.append("pdf", renamedFile);
 
       fetch("https://quizmarket-backend.onrender.com/upload", {
         method: "POST",
@@ -36,7 +37,7 @@ export default function Home() {
           if (data.url) {
             alert("✅ PDF uploaded successfully!");
             const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-            uploaded.push({ name: f.name, url: data.url });
+            uploaded.push({ name: renamedFile.name, url: data.url });
             localStorage.setItem("uploadedPDFs", JSON.stringify(uploaded));
             console.log("📤 Saved to localStorage:", uploaded);
             if (callback) callback();
@@ -82,8 +83,8 @@ export default function Home() {
         <button onClick={() => setIsAdmin(true)}>Login as Admin</button>
       ) : (
         <div style={{ marginBottom: "1rem" }}>
-          <button onClick={() => uploadPDF(loadSamples)}>Upload Sample PDF</button>
-          <button onClick={() => uploadPDF(loadStore)}>Upload Store PDF</button>
+          <button onClick={() => uploadPDF("sample", loadSamples)}>Upload Sample PDF</button>
+          <button onClick={() => uploadPDF("store", loadStore)}>Upload Store PDF</button>
           <button onClick={logoutAdmin} style={{ marginLeft: "1rem" }}>Logout</button>
         </div>
       )}
