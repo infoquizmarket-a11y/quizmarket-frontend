@@ -18,6 +18,8 @@ export default function Home() {
       const f = fi.files && fi.files[0];
       if (!f) return;
 
+      console.log("📤 Upload triggered:", f.name);
+
       const formData = new FormData();
       formData.append("pdf", f);
 
@@ -32,29 +34,41 @@ export default function Home() {
             const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
             uploaded.push({ name: f.name, url: data.url });
             localStorage.setItem("uploadedPDFs", JSON.stringify(uploaded));
+            console.log("📤 Saved to localStorage:", uploaded);
             if (callback) callback();
           } else {
             alert("❌ Upload failed: " + (data.error || "Unknown error"));
           }
         })
-        .catch(() => alert("❌ Upload failed"));
+        .catch(err => {
+          console.error("❌ Upload error:", err);
+          alert("❌ Upload failed");
+        });
     };
     fi.click();
   }
 
- function loadSamples() {
-  const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-  const sampleFiles = uploaded.filter(file => file.name.startsWith("sample_"));
-  console.log("📁 Loaded samples:", sampleFiles);
-  setSamples(sampleFiles);
-}
+  function loadSamples() {
+    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
+    const sampleFiles = uploaded.filter(file => file.name.startsWith("sample_"));
+    console.log("📁 Loaded samples:", sampleFiles);
+    setSamples(sampleFiles);
+  }
 
   function loadStore() {
-  const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-  const storeFiles = uploaded.filter(file => file.name.startsWith("store_"));
-  console.log("🛒 Loaded store PDFs:", storeFiles);
-  setStorePDFs(storeFiles);
-}
+    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
+    const storeFiles = uploaded.filter(file => file.name.startsWith("store_"));
+    console.log("🛒 Loaded store PDFs:", storeFiles);
+    setStorePDFs(storeFiles);
+  }
+
+  function logoutAdmin() {
+    setIsAdmin(false);
+    localStorage.removeItem("uploadedPDFs");
+    setSamples([]);
+    setStorePDFs([]);
+    console.log("🚪 Admin logged out and localStorage cleared");
+  }
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -66,27 +80,36 @@ export default function Home() {
         <div style={{ marginBottom: "1rem" }}>
           <button onClick={() => uploadPDF(loadSamples)}>Upload Sample PDF</button>
           <button onClick={() => uploadPDF(loadStore)}>Upload Store PDF</button>
+          <button onClick={logoutAdmin} style={{ marginLeft: "1rem" }}>Logout</button>
         </div>
       )}
 
       <h3>Free Samples</h3>
       <div>
-        {samples.map(file => (
-          <div key={file.url}>
-            <h4>{file.name}</h4>
-            <a href={file.url} target="_blank" rel="noopener noreferrer">Download</a>
-          </div>
-        ))}
+        {samples.length === 0 ? (
+          <p>No sample PDFs uploaded yet.</p>
+        ) : (
+          samples.map(file => (
+            <div key={file.url}>
+              <h4>{file.name}</h4>
+              <a href={file.url} target="_blank" rel="noopener noreferrer">Download</a>
+            </div>
+          ))
+        )}
       </div>
 
       <h3>Store PDFs</h3>
       <div>
-        {storePDFs.map(file => (
-          <div key={file.url}>
-            <h4>{file.name}</h4>
-            <a href={file.url} target="_blank" rel="noopener noreferrer">Download</a>
-          </div>
-        ))}
+        {storePDFs.length === 0 ? (
+          <p>No store PDFs uploaded yet.</p>
+        ) : (
+          storePDFs.map(file => (
+            <div key={file.url}>
+              <h4>{file.name}</h4>
+              <a href={file.url} target="_blank" rel="noopener noreferrer">Download</a>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
