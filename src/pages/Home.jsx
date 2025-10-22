@@ -53,19 +53,43 @@ export default function Home() {
     fi.click();
   }
 
-  function loadSamples() {
-    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-    const sampleFiles = uploaded.filter(file => file.name.startsWith("sample_"));
-    console.log("📁 Loaded samples:", sampleFiles);
-    setSamples(sampleFiles);
-  }
+ function loadSamples() {
+  fetch("https://quizmarket-backend.onrender.com/list")
+    .then(res => res.json())
+    .then(data => {
+      const sampleFiles = data.samples
+        .filter(file => file.title.startsWith("sample_"))
+        .map(file => ({
+          name: file.title + ".pdf",
+          url: file.url,
+        }));
+
+      console.log("📁 Loaded samples from backend:", sampleFiles);
+      setSamples(sampleFiles);
+    })
+    .catch(err => {
+      console.error("❌ Failed to fetch samples from backend:", err);
+    });
+}
 
   function loadStore() {
-    const uploaded = JSON.parse(localStorage.getItem("uploadedPDFs") || "[]");
-    const storeFiles = uploaded.filter(file => file.name.startsWith("store_"));
-    console.log("🛒 Loaded store PDFs:", storeFiles);
-    setStorePDFs(storeFiles);
-  }
+  fetch("https://quizmarket-backend.onrender.com/list")
+    .then(res => res.json())
+    .then(data => {
+      const storeFiles = data.samples
+        .filter(file => file.title.startsWith("store_"))
+        .map(file => ({
+          name: file.title + ".pdf",
+          url: file.url,
+        }));
+
+      console.log("🛒 Loaded store PDFs from backend:", storeFiles);
+      setStorePDFs(storeFiles);
+    })
+    .catch(err => {
+      console.error("❌ Failed to fetch store PDFs from backend:", err);
+    });
+}
 
   function logoutAdmin() {
     setIsAdmin(false);
