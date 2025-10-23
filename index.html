@@ -950,60 +950,50 @@
         .catch(() => alert("Delete failed"));
     }
 
-    function loadSamples() {
-      if (!samplesGrid) {
-        console.error("❌ samplesGrid is null");
+   function loadSamples() {
+  if (!samplesGrid) {
+    console.error("❌ samplesGrid is null");
+    return;
+  }
+
+  fetch(`${API_BASE}/list?t=${Date.now()}`, {
+    method: "GET",
+    headers: {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    cache: "no-store"
+  })
+    .then(res => res.json())
+    .then(data => {
+      samplesGrid.innerHTML = "";
+
+      const files = Array.isArray(data?.samples)
+        ? data.samples.filter(file => file && typeof file.title === "string")
+        : [];
+
+      if (files.length === 0) {
+        samplesGrid.innerHTML = "<p style='color:red;'>No sample PDFs found.</p>";
         return;
       }
 
-      fetch(`${API_BASE}/list?t=${Date.now()}`, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
-        },
-        cache: "no-store"
-      })
-        .then(async res => {
-          console.log("📡 Sample response status:", res.status);
-          const text = await res.text();
-          console.log("📦 Raw sample response text:", text);
-          try {
-            const data = JSON.parse(text);
-            console.log("✅ Parsed sample JSON:", data);
-
-            samplesGrid.innerHTML = "";
-
-            const files = Array.isArray(data?.samples)
-              ? data.samples.filter(file => file && typeof file.title === "string" && file.title.startsWith("sample_"))
-              : [];
-
-            if (files.length === 0) {
-              samplesGrid.innerHTML = "<p style='color:red;'>No sample PDFs found.</p>";
-              return;
-            }
-
-            files.forEach(file => {
-              const card = document.createElement("div");
-              card.className = "sample-card";
-              card.innerHTML = `
-                <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
-                <h4>${file.title}</h4>
-                <button class="download-btn" onclick="window.open('${file.url}', '_blank')">Download</button>
-                ${isAdmin() ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadSamples)">Delete</button>` : ""}
-              `;
-              samplesGrid.appendChild(card);
-            });
-          } catch (err) {
-            console.error("❌ Failed to parse sample JSON:", err);
-            samplesGrid.innerHTML = "<p style='color:red;'>Error loading sample PDFs.</p>";
-          }
-        })
-        .catch(err => {
-          console.error("❌ Fetch failed for sample PDFs:", err);
-          samplesGrid.innerHTML = "<p style='color:red;'>Failed to load sample PDFs.</p>";
-        });
-    }
+      files.forEach(file => {
+        const card = document.createElement("div");
+        card.className = "sample-card";
+        card.innerHTML = `
+          <div class="sample-icon"><i class="fas fa-file-pdf"></i></div>
+          <h4>${file.title}.pdf</h4>
+          <button class="download-btn" onclick="window.open('${file.url}', '_blank')">Download</button>
+          ${isAdmin ? `<button class="download-btn" style="background:#dc3545; margin-top:8px;" onclick="deleteFile('${file.title}', loadSamples)">Delete</button>` : ""}
+        `;
+        samplesGrid.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error("❌ Fetch failed for sample PDFs:", err);
+      samplesGrid.innerHTML = "<p style='color:red;'>Failed to load sample PDFs.</p>";
+    });
+}
 
     function loadStore() {
       if (!pdfGrid) {
@@ -1030,9 +1020,8 @@
             pdfGrid.innerHTML = "";
 
             const files = Array.isArray(data?.samples)
-              ? data.samples.filter(file => file && typeof file.title === "string" && !file.title.startsWith("sample_"))
-              : [];
-
+  ? data.samples.filter(file => file && typeof file.title === "string")
+  : [];
             if (files.length === 0) {
               pdfGrid.innerHTML = "<p style='color:red;'>No store PDFs found.</p>";
               return;
