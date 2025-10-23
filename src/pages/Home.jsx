@@ -11,37 +11,53 @@ export default function Home() {
   }, []);
 
   function uploadPDF(prefix, callback) {
-    const fi = document.createElement("input");
-    fi.type = "file";
-    fi.accept = "application/pdf";
-    fi.onchange = () => {
-      const f = fi.files && fi.files[0];
-      if (!f) return;
+  const fi = document.createElement("input");
+  fi.type = "file";
+  fi.accept = "application/pdf";
 
-      const renamedFile = new File([f], `${prefix}_${f.name}`, { type: f.type });
-      const formData = new FormData();
-      formData.append("pdf", renamedFile);
+  fi.onchange = () => {
+    const f = fi.files?.[0];
+    if (!f) return;
 
-      fetch("https://quizmarket-backend.onrender.com/upload", {
-        method: "POST",
-        body: formData,
+    // ✅ Validate file type
+    if (f.type !== "application/pdf") {
+      alert("❌ Please upload a valid PDF file.");
+      return;
+    }
+
+    // ✅ Rename file with prefix
+    const renamedFile = new File([f], `${prefix}_${f.name}`, { type: f.type });
+    const formData = new FormData();
+    formData.append("pdf", renamedFile);
+
+    // ✅ Show loading cursor
+    document.body.style.cursor = "wait";
+
+    fetch("https://quizmarket-backend.onrender.com/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("📦 Upload response:", data); // ✅ Log actual response
+        document.body.style.cursor = "default";
+
+        if (data.url) {
+          alert("✅ PDF uploaded successfully!");
+          if (typeof callback === "function") callback(); // Refresh grid
+        } else {
+          alert("❌ Upload failed: " + (data.error || "Unknown error"));
+        }
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.url) {
-            alert("✅ PDF uploaded successfully!");
-            if (callback) callback();
-          } else {
-            alert("❌ Upload failed: " + (data.error || "Unknown error"));
-          }
-        })
-        .catch(err => {
-          console.error("❌ Upload error:", err);
-          alert("❌ Upload failed");
-        });
-    };
-    fi.click();
-  }
+      .catch(err => {
+        console.error("❌ Upload error:", err);
+        document.body.style.cursor = "default";
+        alert("❌ Upload failed");
+      });
+  };
+
+  fi.click();
+}
 
   function deleteFile(title, callback) {
     fetch("https://quizmarket-backend.onrender.com/delete", {
